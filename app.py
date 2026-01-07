@@ -3,11 +3,10 @@ import os
 import random
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, make_response
 import sqlite3
 from datetime import datetime
 from functools import wraps
-from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 
@@ -192,6 +191,17 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated
 
+# No-cache decorator
+def no_cache(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        response = make_response(f(*args, **kwargs))
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
+    return decorated
+
 # === PUBLIC ROUTES ===
 @app.route('/')
 def home():
@@ -276,6 +286,7 @@ def admin_login():
 
 @app.route('/admin')
 @login_required
+@no_cache
 def admin_dashboard():
     conn = sqlite3.connect('blog.db')
     c = conn.cursor()
@@ -300,6 +311,7 @@ def admin_dashboard():
 
 @app.route('/admin/logout')
 @login_required
+@no_cache
 def admin_logout():
     session.clear()  # Fully removes all session data
     return redirect(url_for('home'))  # Sends to public homepage
@@ -307,6 +319,7 @@ def admin_logout():
 # Edit Homepage (with image upload)
 @app.route('/admin/edit-home', methods=['GET', 'POST'])
 @login_required
+@no_cache
 def edit_home():
     if request.method == 'POST':
         conn = sqlite3.connect('blog.db')
@@ -336,6 +349,7 @@ def edit_home():
 # Edit About Us (no change)
 @app.route('/admin/edit-about', methods=['GET', 'POST'])
 @login_required
+@no_cache
 def edit_about():
     if request.method == 'POST':
         conn = sqlite3.connect('blog.db')
@@ -353,6 +367,7 @@ def edit_about():
 # Edit Services (add image uploads later if needed)
 @app.route('/admin/edit-services', methods=['GET', 'POST'])
 @login_required
+@no_cache
 def edit_services():
     if request.method == 'POST':
         conn = sqlite3.connect('blog.db')
@@ -379,6 +394,7 @@ def edit_services():
 # Manage Blog - NOW FULLY WORKING WITH IMAGE UPLOAD
 @app.route('/admin/manage-blog', methods=['GET', 'POST'])
 @login_required
+@no_cache
 def manage_blog():
     conn = sqlite3.connect('blog.db')
     c = conn.cursor()
@@ -412,6 +428,7 @@ def manage_blog():
 
 @app.route('/admin/mark-read/<int:message_id>')
 @login_required
+@no_cache
 def mark_read(message_id):
     conn = sqlite3.connect('blog.db')
     c = conn.cursor()
@@ -423,6 +440,7 @@ def mark_read(message_id):
 
 @app.route('/admin/delete-message/<int:message_id>')
 @login_required
+@no_cache
 def delete_message(message_id):
     conn = sqlite3.connect('blog.db')
     c = conn.cursor()
@@ -434,6 +452,7 @@ def delete_message(message_id):
 
 @app.route('/admin/profile', methods=['GET', 'POST'])
 @login_required
+@no_cache
 def admin_profile():
     conn = sqlite3.connect('blog.db')
     c = conn.cursor()
