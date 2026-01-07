@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}RJ Asis Web Services{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -14,15 +15,15 @@
 
     <!-- ONLY show public nav bar if NOT on an admin page -->
     {% if not request.path.startswith('/admin') %}
-    <nav class="bg-blue-700 text-white shadow-lg">
+    <nav class="bg-gray-800 text-white shadow-lg">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="/" class="text-2xl font-bold">RJ Asis Web Services</a>
             <div class="space-x-8 text-lg">
-                <a href="/" class="hover:text-blue-200 transition">Home</a>
-                <a href="/about" class="hover:text-blue-200 transition">About Us</a>
-                <a href="/services" class="hover:text-blue-200 transition">Services</a>
-                <a href="/contact" class="hover:text-blue-200 transition">Contact</a>
-                <a href="/blog" class="hover:text-blue-200 transition">Blog</a>
+                <a href="/" class="hover:text-gray-300 transition">Home</a>
+                <a href="/about" class="hover:text-gray-300 transition">About Us</a>
+                <a href="/services" class="hover:text-gray-300 transition">Services</a>
+                <a href="/contact" class="hover:text-gray-300 transition">Contact</a>
+                <a href="/blog" class="hover:text-gray-300 transition">Blog</a>
             </div>
         </div>
     </nav>

@@ -80,7 +80,26 @@
         <div class="p-8">
 
             <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-800">Client Inbox</h2>
+                <div class="flex items-center gap-4">
+                    <h2 class="text-3xl font-bold text-gray-800">Client Inbox</h2>
+                    <div class="relative inline-block text-left" id="quick-actions-dropdown">
+                        <div>
+                            <button type="button" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500" aria-haspopup="true" aria-expanded="true">
+                                Quick Actions
+                                <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-10" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                            <div class="py-1" role="none">
+                                <a href="/admin/manage-blog" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">📝 Manage Blog</a>
+                                <a href="/admin/edit-home" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">🏠 Edit Homepage</a>
+                                <a href="/admin/edit-services" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">⚙️ Edit Services</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="text-right">
                     <p class="text-2xl font-bold text-blue-600">{{ total_messages }}</p>
                     <p class="text-gray-600">Total Messages</p>
@@ -149,6 +168,27 @@ function closeSuccessModal() {
 setTimeout(() => {
     closeSuccessModal();
 }, 3000);
+
+// Quick Actions Dropdown Logic
+document.addEventListener('DOMContentLoaded', function () {
+    const dropdown = document.getElementById('quick-actions-dropdown');
+    const button = dropdown.querySelector('button');
+    const menu = dropdown.querySelector('div[role="menu"]');
+
+    button.addEventListener('click', function () {
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', !isExpanded);
+        menu.classList.toggle('hidden');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function (event) {
+        if (!dropdown.contains(event.target)) {
+            button.setAttribute('aria-expanded', 'false');
+            menu.classList.add('hidden');
+        }
+    });
+});
 </script>
 
 <style>

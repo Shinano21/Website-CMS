@@ -6,6 +6,18 @@
     <div class="container mx-auto px-6 max-w-4xl">
         <h2 class="text-4xl font-bold text-center mb-12 text-blue-700">About Us</h2>
         <p class="text-lg leading-relaxed mb-10 text-gray-700">{{ about_story }}</p>
+
+        <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+                <h3 class="text-3xl font-semibold mb-6 text-blue-600">Our Mission</h3>
+                <p class="text-lg leading-relaxed text-gray-700">
+                    Our mission is to empower small businesses by creating professional, user-friendly websites and providing reliable, ongoing IT support. We believe a strong online presence is key to success, and we're dedicated to delivering affordable, high-quality solutions that help our clients thrive in the digital world.
+                </p>
+            </div>
+            <div>
+                <img src="{{ url_for('static', filename='professional-image.jpg') }}" alt="Our Team" class="rounded-lg shadow-xl w-full h-auto object-cover">
+            </div>
+        </div>
         
         <h3 class="text-3xl font-semibold mb-6 text-blue-600">Our Team</h3>
         <div class="bg-gray-50 p-8 rounded-lg">
