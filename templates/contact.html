@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-6 max-w-3xl">
+        <h2 class="text-4xl font-bold text-center mb-12 text-blue-700">Get in Touch</h2>
+        <p class="text-center text-lg mb-10 text-gray-600">
+            Ready to build your professional website? Let's talk!
+        </p>
+        
+        <div class="grid md:grid-cols-2 gap-10 mb-12">
+            <div class="bg-blue-50 p-8 rounded-lg">
+                <h3 class="text-2xl font-semibold mb-4">Contact Info</h3>
+                <p class="mb-3"><strong>Email:</strong> <a href="mailto:randielasis15@gmail.com" class="text-blue-600 underline">randielasis15@gmail.com</a></p>
+                <p class="mb-3"><strong>Phone:</strong> 0938-082-8470</p>
+                <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/randiel-james-asis-6699882ba/" target="_blank" class="text-blue-600 underline">View Profile</a></p>
+            </div>
+            
+            <div>
+                <form method="POST" class="bg-gray-50 p-8 rounded-lg">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">Your Name</label>
+                        <input type="text" name="name" required class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">Your Email</label>
+                        <input type="email" name="email" required class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">Message</label>
+                        <textarea name="message" rows="6" required class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-700 text-white font-bold py-4 rounded-lg hover:bg-blue-800 transition">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

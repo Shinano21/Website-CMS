@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Edit Services - Admin{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-10 px-6 max-w-5xl">
+    <h1 class="text-4xl font-bold mb-8 text-blue-700">Edit Services</h1>
+    
+    <form method="POST" class="bg-white rounded-xl shadow-lg p-8">
+        <!-- Service 1 -->
+        <div class="mb-12 pb-8 border-b border-gray-200">
+            <h2 class="text-2xl font-bold mb-6 text-blue-600">Service 1</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block font-semibold mb-2">Title</label>
+                    <input type="text" name="s1_title" value="{{ s1_title }}" class="w-full p-3 border rounded-lg" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block font-semibold mb-2">Description</label>
+                    <textarea name="s1_desc" rows="3" class="w-full p-3 border rounded-lg" required>{{ s1_desc }}</textarea>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Price</label>
+                    <input type="text" name="s1_price" value="{{ s1_price }}" class="w-full p-3 border rounded-lg" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="mb-12 pb-8 border-b border-gray-200">
+            <h2 class="text-2xl font-bold mb-6 text-blue-600">Service 2</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block font-semibold mb-2">Title</label>
+                    <input type="text" name="s2_title" value="{{ s2_title }}" class="w-full p-3 border rounded-lg" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block font-semibold mb-2">Description</label>
+                    <textarea name="s2_desc" rows="3" class="w-full p-3 border rounded-lg" required>{{ s2_desc }}</textarea>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Price</label>
+                    <input type="text" name="s2_price" value="{{ s2_price }}" class="w-full p-3 border rounded-lg" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 text-blue-600">Service 3</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block font-semibold mb-2">Title</label>
+                    <input type="text" name="s3_title" value="{{ s3_title }}" class="w-full p-3 border rounded-lg" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block font-semibold mb-2">Description</label>
+                    <textarea name="s3_desc" rows="3" class="w-full p-3 border rounded-lg" required>{{ s3_desc }}</textarea>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2">Price</label>
+                    <input type="text" name="s3_price" value="{{ s3_price }}" class="w-full p-3 border rounded-lg" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center">
+            <a href="/admin" class="text-blue-600 hover:underline">← Back to Dashboard</a>
+            <button type="submit" class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 transition">
+                Save All Services
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

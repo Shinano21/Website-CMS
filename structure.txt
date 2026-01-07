@@ -1,0 +1,28 @@
+rj-web-services/
+│
+├── app.py                        ← Main Flask app with CMS
+├── blog.db                       ← SQLite database (auto-created)
+│
+├── static/
+│   ├── uploads/                  ← Uploaded images
+├── templates/
+│   ├── base.html
+│   ├── home.html
+│   ├── about.html
+│   ├── services.html
+│   ├── contact.html
+│   ├── blog.html
+│   ├── admin/
+│   │   ├── login.html
+│   │   ├── dashboard.html
+│   │   ├── edit_home.html
+│   │   ├── edit_about.html
+|   |   ├── edit_services.html
+│   │   ├── manage_blog.html
+│   │   └── profile.html
+
+│                       ← Optional (for images, custom CSS)
+└── requirements.txt
+
+
+App password nwtw pbip pctq jbdf

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Manage Blog - Admin{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-10 px-6 max-w-5xl">
+    <h1 class="text-4xl font-bold mb-8 text-blue-700">Manage Blog Posts</h1>
+
+    <!-- Add New Post Form -->
+    <div class="bg-white rounded-xl shadow-lg p-8 mb-10">
+        <h2 class="text-2xl font-bold mb-6 text-green-600">Add New Blog Post</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-6">
+                <label class="block text-lg font-semibold mb-2">Title</label>
+                <input type="text" name="title" placeholder="Enter post title..." 
+                    class="w-full p-4 border border-gray-300 rounded-lg" required>
+            </div>
+            <div class="mb-8">
+                <label class="block text-lg font-semibold mb-2">Content</label>
+                <textarea name="content" rows="8" placeholder="Write your blog post here..." 
+                        class="w-full p-4 border border-gray-300 rounded-lg" required></textarea>
+            </div>
+            <div class="mb-8">
+                <label class="block text-lg font-semibold mb-2">Featured Image (Upload)</label>
+                <input type="file" name="image" accept="image/*" 
+                    class="w-full p-4 border border-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-blue-600 file:text-white">
+                <p class="text-sm text-gray-500 mt-2">Upload a new image (PNG, JPG, GIF, WebP). Optional – leave blank to keep no image.</p>
+            </div>
+            <button type="submit" class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700">
+                Publish Post
+            </button>
+        </form>
+    </div>
+
+    
+
+    <!-- Existing Posts -->
+    <h2 class="text-2xl font-bold mb-6 text-blue-600">Existing Posts</h2>
+    {% if posts|length == 0 %}
+        <p class="text-gray-500 text-center py-10">No blog posts yet. Add your first one above!</p>
+    {% else %}
+        {% for post in posts %}
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6 flex justify-between items-start">
+            <div class="flex-1">
+                <h3 class="text-xl font-bold text-blue-700">{{ post[1] }}</h3>
+                <p class="text-sm text-gray-500 mb-3">Posted on {{ post[2] }}</p>
+                <p class="text-gray-700 line-clamp-3">{{ post[2] }}</p>
+            </div>
+            <div class="ml-6">
+                <form method="POST" onsubmit="return confirm('Delete this post permanently?');">
+                    <input type="hidden" name="delete" value="{{ post[0] }}">
+                    <button type="submit" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="mt-10">
+        <a href="/admin" class="text-blue-600 hover:underline text-lg">← Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

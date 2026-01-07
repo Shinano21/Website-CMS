@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Edit About Us - Admin{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-10 px-6 max-w-4xl">
+    <h1 class="text-4xl font-bold mb-8 text-blue-700">Edit About Us Page</h1>
+    
+    <form method="POST" class="bg-white rounded-xl shadow-lg p-8">
+        <div class="mb-8">
+            <label class="block text-lg font-semibold mb-3 text-gray-700">Our Story / Introduction</label>
+            <textarea name="story" rows="8" 
+                      class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">{{ about_story }}</textarea>
+            <p class="text-sm text-gray-500 mt-2">Supports multiple lines. Use this for your company history or mission.</p>
+        </div>
+
+        <div class="mb-10">
+            <label class="block text-lg font-semibold mb-3 text-gray-700">Team Members</label>
+            <textarea name="team" rows="6" 
+                      class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">{{ about_team }}</textarea>
+            <p class="text-sm text-gray-500 mt-2">One team member per line. Use • or - for bullets (as shown on frontend).</p>
+        </div>
+
+        <div class="flex justify-between items-center">
+            <a href="/admin" class="text-blue-600 hover:underline">← Back to Dashboard</a>
+            <button type="submit" class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 transition">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

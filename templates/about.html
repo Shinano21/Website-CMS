@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-6 max-w-4xl">
+        <h2 class="text-4xl font-bold text-center mb-12 text-blue-700">About Us</h2>
+        <p class="text-lg leading-relaxed mb-10 text-gray-700">{{ about_story }}</p>
+        
+        <h3 class="text-3xl font-semibold mb-6 text-blue-600">Our Team</h3>
+        <div class="bg-gray-50 p-8 rounded-lg">
+            <p class="text-lg whitespace-pre-line">{{ about_team }}</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

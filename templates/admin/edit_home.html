@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Edit Homepage - Admin{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-10 px-6 max-w-4xl">
+    <h1 class="text-4xl font-bold mb-8 text-blue-700">Edit Homepage Content</h1>
+    
+    <!-- CRITICAL FIX: Added enctype="multipart/form-data" -->
+    <form method="POST" enctype="multipart/form-data" class="bg-white rounded-xl shadow-lg p-8">
+        <div class="mb-8">
+            <label class="block text-lg font-semibold mb-3 text-gray-700">Main Title</label>
+            <input type="text" name="title" value="{{ title }}" 
+                   class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-lg" required>
+        </div>
+
+        <div class="mb-8">
+            <label class="block text-lg font-semibold mb-3 text-gray-700">Subtitle</label>
+            <input type="text" name="subtitle" value="{{ subtitle }}" 
+                   class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-lg" required>
+        </div>
+
+        <div class="mb-10">
+            <label class="block text-lg font-semibold mb-3 text-gray-700">Value Proposition / Description</label>
+            <textarea name="value" rows="6" 
+                      class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">{{ value }}</textarea>
+        </div>
+
+        <!-- Hero Image Upload Section -->
+        <div class="mb-10">
+            <label class="block text-lg font-semibold mb-3 text-gray-700">Hero Background Image</label>
+            <input type="file" name="home_image" accept="image/*" 
+                   class="w-full p-4 border border-gray-300 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+            
+            <p class="text-sm text-gray-500 mt-3">
+                Current: <span class="font-medium">{{ home_image or 'No image set' }}</span>
+            </p>
+            
+            {% if home_image %}
+                <div class="mt-4">
+                    <p class="text-sm font-semibold text-gray-700 mb-2">Current Image Preview:</p>
+                    <img src="{{ home_image }}" alt="Current hero background" 
+                         class="w-full max-h-96 object-cover rounded-lg border border-gray-200 shadow-md">
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+            <a href="/admin" class="text-blue-600 hover:underline text-lg">← Back to Dashboard</a>
+            <button type="submit" class="bg-green-600 text-white font-bold py-3 px-10 rounded-lg hover:bg-green-700 transition shadow-lg">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

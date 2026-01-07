@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="relative bg-cover bg-center bg-no-repeat py-32 text-white">
+    <!-- Background: Uploaded hero image or gradient fallback -->
+    {% if home_image and home_image.strip() %}
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+             style="background-image: url('{{ url_for('static', filename='uploads/' ~ home_image.split('/')[-1]) }}');">
+        </div>
+    {% else %}
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800"></div>
+    {% endif %}
+
+    <!-- Dark overlay for perfect text readability on any background -->
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+
+    <!-- Content -->
+    <div class="container mx-auto px-6 relative z-10 text-center max-w-6xl mx-auto">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6 drop-shadow-lg">
+            {{ home_title }}
+        </h1>
+        <p class="text-2xl md:text-3xl mb-8 max-w-3xl mx-auto drop-shadow-md">
+            {{ home_subtitle }}
+        </p>
+        <p class="text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed mb-12 drop-shadow-md">
+            {{ home_value }}
+        </p>
+
+        <div class="mt-10">
+            <a href="/contact"
+               class="inline-block bg-white text-blue-700 font-bold py-4 px-12 rounded-lg hover:bg-gray-100 hover:shadow-2xl transition-all duration-300 text-lg shadow-xl transform hover:-translate-y-1">
+                Get a Free Quote
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
