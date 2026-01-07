@@ -11,7 +11,9 @@ from flask_mail import Mail, Message
 from dotenv import load_dotenv
 
 app = Flask(__name__)
-app.secret_key = 'super-secret-key-change-in-production'  # CHANGE THIS!
+app.secret_key = "super-secret-key"  # change this
+
+load_dotenv()
 
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
@@ -19,11 +21,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Ensure upload folder exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-load_dotenv()
-
-app = Flask(__name__)
-app.secret_key = "super-secret-key"  # change this
 
 # Mail config
 app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
