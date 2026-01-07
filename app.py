@@ -7,24 +7,19 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import sqlite3
 from datetime import datetime
 from functools import wraps
-from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
-
-app = Flask(__name__)
-app.secret_key = 'super-secret-key-change-in-production'  # CHANGE THIS!
-
-UPLOAD_FOLDER = 'static/uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Ensure upload folder exists
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "super-secret-key"  # change this
+app.secret_key = os.getenv('SECRET_KEY', 'super-secret-key-change-in-production')  # CHANGE THIS!
+
+# Upload folder config
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Mail config
 app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
@@ -404,6 +399,7 @@ def manage_blog():
                       (title, content, date, image_path))
             flash("New post published!", "success")
         conn.commit()
+        return redirect(url_for('manage_blog'))
     
     c.execute("SELECT id, title, date, image_url FROM posts ORDER BY id DESC")
     posts = c.fetchall()

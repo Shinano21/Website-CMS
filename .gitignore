@@ -1,1 +1,6 @@
 app.log
+__pycache__/
+*.pyc
+static/uploads/
+blog.db
+.env
