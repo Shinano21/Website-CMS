@@ -267,13 +267,14 @@ def admin_login():
         
         conn = sqlite3.connect('blog.db')
         c = conn.cursor()
-        c.execute("SELECT password_hash FROM admin_user WHERE username = ?", (username,))
-        row = c.fetchone()
+        c.execute("SELECT id, password_hash FROM admin_user WHERE username = ?", (username,))
+        user = c.fetchone()
         conn.close()
         
-        if row and check_password_hash(row[0], password):
+        if user and check_password_hash(user[1], password):
             session['logged_in'] = True
             session['admin_username'] = username
+            session['admin_user_id'] = user[0]
             flash("Login successful!", "success")
             return redirect(url_for('admin_dashboard'))
         else:
@@ -517,6 +518,63 @@ def admin_profile():
         current_email=user[1],
         email_verified=user[2]
     )
+
+# === USER MANAGEMENT ===
+@app.route('/admin/users', methods=['GET', 'POST'])
+@login_required
+@no_cache
+def manage_users():
+    conn = sqlite3.connect('blog.db')
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+
+        # Check if username or email already exists
+        c.execute("SELECT COUNT(*) FROM admin_user WHERE username = ? OR email = ?", (username, email))
+        if c.fetchone()[0] > 0:
+            flash("Username or email already exists.", "error")
+        else:
+            password_hash = generate_password_hash(password)
+            c.execute("INSERT INTO admin_user (username, email, password_hash) VALUES (?, ?, ?)",
+                      (username, email, password_hash))
+            conn.commit()
+            flash(f"User '{username}' created successfully!", "success")
+
+        return redirect(url_for('manage_users'))
+
+    c.execute("SELECT id, username, email, email_verified FROM admin_user")
+    users = c.fetchall()
+    conn.close()
+    return render_template('admin/users.html', users=users)
+
+@app.route('/admin/delete-user/<int:user_id>', methods=['POST'])
+@login_required
+@no_cache
+def delete_user(user_id):
+    conn = sqlite3.connect('blog.db')
+    c = conn.cursor()
+
+    # Prevent self-deletion
+    if user_id == session.get('admin_user_id'):
+        flash("You cannot delete your own account.", "error")
+        conn.close()
+        return redirect(url_for('manage_users'))
+
+    # Prevent deletion of the last user
+    c.execute("SELECT COUNT(*) FROM admin_user")
+    if c.fetchone()[0] <= 1:
+        flash("You cannot delete the last admin user.", "error")
+        conn.close()
+        return redirect(url_for('manage_users'))
+
+    c.execute("DELETE FROM admin_user WHERE id = ?", (user_id,))
+    conn.commit()
+    conn.close()
+    flash("User deleted successfully!", "success")
+    return redirect(url_for('manage_users'))
 
 
 if __name__ == '__main__':

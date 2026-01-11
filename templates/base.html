@@ -29,18 +29,17 @@
     </nav>
     {% endif %}
 
-    <!-- Flashed messages (only errors now, success hidden as per previous fix) -->
+    <!-- Flashed messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="container mx-auto mt-4">
                 {% for category, message in messages %}
-                    {% if category != 'success' %}
-                        <div class="max-w-2xl mx-auto text-center p-4 rounded-lg 
-                                    {% if category == 'error' %}bg-red-100 text-red-800{% 
-                                    else %}bg-blue-100 text-blue-800{% endif %}">
-                            {{ message }}
-                        </div>
-                    {% endif %}
+                    <div class="max-w-2xl mx-auto text-center p-4 rounded-lg
+                                {% if category == 'error' %}bg-red-100 text-red-800
+                                {% elif category == 'success' %}bg-green-100 text-green-800
+                                {% else %}bg-blue-100 text-blue-800{% endif %}">
+                        {{ message }}
+                    </div>
                 {% endfor %}
             </div>
         {% endif %}
