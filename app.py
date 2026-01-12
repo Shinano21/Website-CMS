@@ -1,6 +1,7 @@
 # app.py
 import os
 import random
+import secrets
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, redirect, url_for, session, flash, make_response
@@ -67,7 +68,8 @@ def init_db():
                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
                 email TEXT NOT NULL,
-                email_verified INTEGER DEFAULT 1,
+                email_verified INTEGER DEFAULT 0,
+                verification_token TEXT,
                 password_hash TEXT NOT NULL)''')
 
 
@@ -111,6 +113,12 @@ def init_db():
         c.execute("ALTER TABLE posts ADD COLUMN image_url TEXT")
     except sqlite3.OperationalError:
         pass  # Column already exists
+
+    # Add verification_token column if missing (safe migration)
+    try:
+        c.execute("ALTER TABLE admin_user ADD COLUMN verification_token TEXT")
+    except sqlite3.OperationalError:
+        pass  # Column already exists
     
     # Sample blog posts
     c.execute("SELECT COUNT(*) FROM posts")
@@ -127,47 +135,44 @@ def init_db():
 init_db()  # This runs every time — safe and adds image support automatically
 
 # Email verification code sender
-def send_verification_email(email):
-    code = random.randint(100000, 999999)
-    session['verification_code'] = str(code)
-
+def send_verification_email(email, token):
+    verification_url = url_for('verify_email', token=token, _external=True)
     msg = Message(
-        subject="Email Verification Code",
+        subject="Verify Your Email Address",
         recipients=[email]
     )
-
     msg.body = f"""
 Hello,
 
-Your verification code is:
+Thank you for registering. Please click the link below to verify your email address:
 
-{code}
+{verification_url}
 
-This code will expire in 5 minutes.
+If you did not request this, please ignore this email.
 
 — RJ Web Services
 """
-
     mail.send(msg)
 
 
-@app.route('/send-verification', methods=['POST'])
-def send_verification():
-    email = request.form['email']
-    send_verification_email(email)
-    session['email'] = email
-    return redirect(url_for('verify'))
 
-@app.route('/verify', methods=['GET', 'POST'])
-def verify():
-    if request.method == 'POST':
-        user_code = request.form['code']
-        if user_code == session.get('verification_code'):
-            return "✅ Email verified successfully"
-        else:
-            return "❌ Invalid verification code"
 
-    return render_template('verify.html')
+@app.route('/verify-email/<token>')
+def verify_email(token):
+    conn = sqlite3.connect('blog.db')
+    c = conn.cursor()
+    c.execute("SELECT id FROM admin_user WHERE verification_token = ?", (token,))
+    user = c.fetchone()
+
+    if user:
+        c.execute("UPDATE admin_user SET email_verified = 1, verification_token = NULL WHERE id = ?", (user[0],))
+        conn.commit()
+        flash("Email verified successfully! You can now log in.", "success")
+    else:
+        flash("Invalid or expired verification token.", "error")
+
+    conn.close()
+    return redirect(url_for('admin_login'))
 
 
 # Helper to get page content
@@ -267,16 +272,19 @@ def admin_login():
         
         conn = sqlite3.connect('blog.db')
         c = conn.cursor()
-        c.execute("SELECT id, password_hash FROM admin_user WHERE username = ?", (username,))
+        c.execute("SELECT id, password_hash, email_verified FROM admin_user WHERE username = ?", (username,))
         user = c.fetchone()
         conn.close()
         
         if user and check_password_hash(user[1], password):
-            session['logged_in'] = True
-            session['admin_username'] = username
-            session['admin_user_id'] = user[0]
-            flash("Login successful!", "success")
-            return redirect(url_for('admin_dashboard'))
+            if user[2]:  # Check if email_verified is 1
+                session['logged_in'] = True
+                session['admin_username'] = username
+                session['admin_user_id'] = user[0]
+                flash("Login successful!", "success")
+                return redirect(url_for('admin_dashboard'))
+            else:
+                flash("Your email is not verified. Please check your inbox for a verification link.", "error")
         else:
             flash("Invalid username or password", "error")
     
@@ -538,10 +546,12 @@ def manage_users():
             flash("Username or email already exists.", "error")
         else:
             password_hash = generate_password_hash(password)
-            c.execute("INSERT INTO admin_user (username, email, password_hash) VALUES (?, ?, ?)",
-                      (username, email, password_hash))
+            token = secrets.token_urlsafe(16)
+            c.execute("INSERT INTO admin_user (username, email, password_hash, verification_token) VALUES (?, ?, ?, ?)",
+                      (username, email, password_hash, token))
             conn.commit()
-            flash(f"User '{username}' created successfully!", "success")
+            send_verification_email(email, token)
+            flash(f"User '{username}' created. A verification email has been sent.", "success")
 
         return redirect(url_for('manage_users'))
 
@@ -549,6 +559,28 @@ def manage_users():
     users = c.fetchall()
     conn.close()
     return render_template('admin/users.html', users=users)
+
+@app.route('/admin/resend-verification/<int:user_id>', methods=['POST'])
+@login_required
+@no_cache
+def resend_verification(user_id):
+    conn = sqlite3.connect('blog.db')
+    c = conn.cursor()
+    c.execute("SELECT email, verification_token FROM admin_user WHERE id = ?", (user_id,))
+    user = c.fetchone()
+
+    if user:
+        email, token = user
+        if token:
+            send_verification_email(email, token)
+            flash(f"Verification email resent to {email}.", "success")
+        else:
+            flash("This user is already verified.", "info")
+    else:
+        flash("User not found.", "error")
+
+    conn.close()
+    return redirect(url_for('manage_users'))
 
 @app.route('/admin/delete-user/<int:user_id>', methods=['POST'])
 @login_required
